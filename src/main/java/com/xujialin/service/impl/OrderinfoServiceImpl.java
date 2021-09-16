@@ -1,6 +1,7 @@
 package com.xujialin.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.xujialin.Utils.UUIDGenerator;
 import com.xujialin.entity.Orderinfo;
 import com.xujialin.mapper.OrderinfoMapper;
@@ -52,10 +53,15 @@ public class OrderinfoServiceImpl extends ServiceImpl<OrderinfoMapper, Orderinfo
 
     @Transactional
     public Boolean CreateOrderToMysql(Map<String,String> map){
-        String id =  map.get("id");
+        String id =  map.get("userid");
+        String goodsid = map.get("goodsid");
+        String address = map.get("address");
+        String OrderId = map.get("OrderId");
         LocalDateTime time = LocalDateTime.now();
-        String OrderId = UUIDGenerator.GeneratorOrderKey();
-        Orderinfo orderinfo = new Orderinfo(OrderId,id, BigDecimal.valueOf(22.50),time,time,null,1,"001",null,null,null,null,null);
+        Orderinfo orderinfo = new Orderinfo(OrderId,id, BigDecimal.valueOf(22.50),time,time,
+                null,1,goodsid,null,address,
+                null,null,null);
+
         try{
             this.save(orderinfo);
             if (!CreateOrderToRedis(OrderId)){
@@ -74,13 +80,33 @@ public class OrderinfoServiceImpl extends ServiceImpl<OrderinfoMapper, Orderinfo
 
         try{
             redisTemplate.opsForValue().set(id,"1");
-            redisTemplate.expire(id,60, TimeUnit.SECONDS);
+            redisTemplate.expire(id,30, TimeUnit.MINUTES);
         }catch (Exception e)
         {
             e.printStackTrace();
             log.info("订单录入redis失败---->{}",LocalDateTime.now());
             return false;
         }
+        return true;
+    }
+
+    @Transactional
+    public Boolean BuyToMysql(String orderid){
+        if(!redisTemplate.delete(orderid)){
+            return false;
+        }
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("orderid",orderid);
+        Orderinfo orderinfo = new Orderinfo();
+        orderinfo.setOrderstatus(2);
+        try{
+            this.update(orderinfo,queryWrapper);
+        }catch (Exception e)
+        {
+            log.info("更改数据失败");
+            return false;
+        }
+
         return true;
     }
 }

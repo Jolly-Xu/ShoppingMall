@@ -2,17 +2,16 @@ package com.xujialin.controller;
 
 
 import com.xujialin.CommonReturnResult.ReturnResult;
+import com.xujialin.Utils.UUIDGenerator;
 import com.xujialin.entity.Goodsinfo;
 import com.xujialin.service.GoodsinfoService;
+import com.xujialin.service.OrderinfoService;
+import com.xujialin.service.impl.OrderinfoServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
@@ -42,17 +41,21 @@ public class OrderinfoController {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
+    @Autowired
+    private OrderinfoServiceImpl orderinfoService;
+
     private static ConcurrentHashMap<String,Boolean> StoreMap = new ConcurrentHashMap<String,Boolean>();
 
 
     /**
      * 下单接口
-     * @param id
+     * @param map
      * @return
      */
     @PostMapping("/placeorder")
-    public ReturnResult PlaceOrder(String id,String userid,String address,String storeid){
+    public ReturnResult PlaceOrder(@RequestBody Map<String,String> map){
         //判断库存
+        String id = map.get("goodsid");
         if(StoreMap.containsKey(id)){
             return new ReturnResult(false);
         }
@@ -60,18 +63,17 @@ public class OrderinfoController {
         Long StoreCount = redisTemplate.opsForValue().decrement(id);
         if (StoreCount >= 0)
         {
+            String OrderId = UUIDGenerator.GeneratorOrderKey();
             try{
                 goodsinfoService.UpdateStore(id);
-                Map<String,String> map = new HashMap<>();
-                map.put("id",id);
+                map.put("OrderId", OrderId);
                 rabbitTemplate.convertAndSend("ORDER_EXCHANGE","ORDER_KEY",map);
             }catch (Exception e){
                 StoreMap.remove(id);
                 redisTemplate.opsForValue().decrement(id);
             }
-            return new ReturnResult(true);
+            return new ReturnResult("200",true,OrderId);
         }
-
         else
         {
             StoreMap.put(id,true);
@@ -80,9 +82,15 @@ public class OrderinfoController {
         }
     }
 
-    @GetMapping("/test")
-    public ReturnResult test(String id){
-        //redisTemplate.opsForValue().decrement(id);
+    @PostMapping("/buy")
+    public ReturnResult Buy(@RequestBody Map<String,String> map){
+        String orderId = map.get("orderid");
+        if(orderinfoService.BuyToMysql(orderId)){
+            log.info("购买成功");
+            return new ReturnResult(true);
+        }
         return new ReturnResult(false);
     }
+
+
 }

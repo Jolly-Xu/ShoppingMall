@@ -69,6 +69,6 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         super.configure(web);
-        web.ignoring().antMatchers("/orderinfo/test");
+        web.ignoring().antMatchers("/orderinfo/placeorder").antMatchers("/orderinfo/buy");
     }
 }

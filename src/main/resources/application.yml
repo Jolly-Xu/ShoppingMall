@@ -19,3 +19,5 @@ spring:
 mybatis-plus:
   mapper-locations: classpath*:/mapper/*.xml
   type-aliases-package: com.xujialin.mapper
+server:
+  port: 8081

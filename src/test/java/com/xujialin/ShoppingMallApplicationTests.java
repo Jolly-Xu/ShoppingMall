@@ -36,4 +36,12 @@ class ShoppingMallApplicationTests {
         System.out.println(a);
     }
 
+
+    @Test
+    void test03(){
+        Boolean adwadwad = redisTemplate.delete("adwadwad");
+        System.out.println(adwadwad);
+    }
+
+
 }
