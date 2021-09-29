@@ -3,6 +3,7 @@ package com.xujialin.Handler;
 import com.alibaba.fastjson.JSON;
 import com.xujialin.CommonReturnResult.ReturnResult;
 import com.xujialin.CommonReturnResult.ReturnResultCode;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,7 @@ import java.io.IOException;
  * @date 2021/8/4 9:33
  */
 
+@Slf4j
 @Component
 public class CustomizeAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override

@@ -51,7 +51,6 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(customizeAuthenticationEntryPoint)
                 .and().authorizeRequests().anyRequest().hasRole("User");
 
-
         http.logout().logoutUrl("/logout")
                 .logoutSuccessHandler(logoutSuccessHandler)
                 .deleteCookies("JSESSIONID")
@@ -69,6 +68,6 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         super.configure(web);
-        web.ignoring().antMatchers("/orderinfo/placeorder").antMatchers("/orderinfo/buy");
+        //web.ignoring().antMatchers("/orderinfo/placeorder").antMatchers("/orderinfo/buy");
     }
 }

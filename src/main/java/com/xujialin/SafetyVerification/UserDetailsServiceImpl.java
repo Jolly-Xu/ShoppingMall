@@ -44,6 +44,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        log.info("{}",username);
         //判断username是否为空
         if (username.isBlank())
             throw new UsernameNotFoundException("用户名为空");
@@ -66,7 +67,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 throw new UsernameNotFoundException("用户名不存在");
             }
             redisTemplate.opsForValue().set(key, o);
-            redisTemplate.expire(key,60,TimeUnit.SECONDS);
         }
         userDetails.setUser(o);
         userDetails.setUsername(o.getUserName());
