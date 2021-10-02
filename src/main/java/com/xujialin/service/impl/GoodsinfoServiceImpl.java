@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -48,5 +50,16 @@ public class GoodsinfoServiceImpl extends ServiceImpl<GoodsinfoMapper, Goodsinfo
             e.printStackTrace();
         }
         return true;
+    }
+
+    @Override
+    public Map<String, Map<String, Object>> InitStoreCountToRedis() {
+        return this.baseMapper.InitStoreCountToRedis();
+    }
+
+    @Override
+    public List<Goodsinfo> getAllGoodsInfoByMysql(String start, String count) {
+        List<Goodsinfo> allGoodsInfoByMysql = this.baseMapper.getAllGoodsInfoByMysql(Integer.valueOf(start), Integer.valueOf(count));
+        return allGoodsInfoByMysql;
     }
 }

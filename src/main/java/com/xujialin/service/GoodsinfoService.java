@@ -3,6 +3,9 @@ package com.xujialin.service;
 import com.xujialin.entity.Goodsinfo;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * <p>
  *  服务类
@@ -13,4 +16,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface GoodsinfoService extends IService<Goodsinfo> {
     public Boolean UpdateStore(String id);
+
+    Map<String, Map<String, Object>> InitStoreCountToRedis();
+
+    List<Goodsinfo> getAllGoodsInfoByMysql(String start,String count);
 }

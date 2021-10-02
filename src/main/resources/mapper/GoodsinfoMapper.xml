@@ -10,5 +10,12 @@
         select stockcount from goodsinfo where id = #{id}
     </select>
 
+    <select id="getAllGoodsInfoByMysql" resultType="com.xujialin.entity.Goodsinfo">
+        SELECT * FROM goodsinfo WHERE islogicdelete = 0 LIMIT #{start},#{count}
+    </select>
+
+    <select id="InitStoreCountToRedis" resultType="java.util.Map">
+            select id,stockcount from goodsinfo where islogicdelete = 0
+    </select>
 
 </mapper>

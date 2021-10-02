@@ -15,8 +15,18 @@ public class UUIDGenerator {
         return "Order-"+UUID.randomUUID().toString().substring(0,25).replace("-","");
     }
 
+    /**
+     *
+     * @param username
+     * @return
+     */
     public static String GeneratorUserNameInfoKey(String username){
         return "UserName-"+username;
+    }
+
+    public static String GeneratorInquireKey(String key){
+
+        return "InquireKey-"+key;
     }
 
 }

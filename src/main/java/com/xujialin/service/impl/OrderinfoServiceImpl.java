@@ -57,9 +57,11 @@ public class OrderinfoServiceImpl extends ServiceImpl<OrderinfoMapper, Orderinfo
         String goodsid = map.get("goodsid");
         String address = map.get("address");
         String OrderId = map.get("OrderId");
+        Float price = Float.valueOf(map.get("price"));
         LocalDateTime time = LocalDateTime.now();
-        Orderinfo orderinfo = new Orderinfo(OrderId,id, BigDecimal.valueOf(22.50),time,time,
-                null,1,goodsid,null,address,
+        Orderinfo orderinfo = new Orderinfo(OrderId,id, BigDecimal.valueOf(price),time,time,
+                null,1,goodsid,null,
+                address,
                 null,null,null);
 
         try{
@@ -99,11 +101,12 @@ public class OrderinfoServiceImpl extends ServiceImpl<OrderinfoMapper, Orderinfo
         queryWrapper.eq("orderid",orderid);
         Orderinfo orderinfo = new Orderinfo();
         orderinfo.setOrderstatus(2);
+        orderinfo.setPurchasetime(LocalDateTime.now());
         try{
             this.update(orderinfo,queryWrapper);
         }catch (Exception e)
         {
-            log.info("更改数据失败");
+            log.info("购买时,更改mysql数据失败");
             return false;
         }
 

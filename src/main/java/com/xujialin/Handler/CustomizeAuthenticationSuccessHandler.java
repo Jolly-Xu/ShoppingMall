@@ -34,7 +34,6 @@ public class CustomizeAuthenticationSuccessHandler implements AuthenticationSucc
         user.setUpdatatime(null);
         user.setCreatetime(null);
         user.setIsLogicDelete(null);
-        log.info("{}",user);
         ReturnResult returnResult = new ReturnResult(ReturnResultCode.LOGIN_SUCCESS.getCode(),true, user);
         httpServletResponse.getWriter().write(JSON.toJSONString(returnResult));
     }

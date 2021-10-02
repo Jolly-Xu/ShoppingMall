@@ -1,6 +1,7 @@
 package com.xujialin.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.xujialin.CommonReturnResult.ReturnResult;
 import com.xujialin.Utils.UUIDGenerator;
 import com.xujialin.entity.Goodsinfo;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -46,7 +48,6 @@ public class OrderinfoController {
 
     private static ConcurrentHashMap<String,Boolean> StoreMap = new ConcurrentHashMap<String,Boolean>();
 
-
     /**
      * 下单接口
      * @param map
@@ -70,7 +71,7 @@ public class OrderinfoController {
                 rabbitTemplate.convertAndSend("ORDER_EXCHANGE","ORDER_KEY",map);
             }catch (Exception e){
                 StoreMap.remove(id);
-                redisTemplate.opsForValue().decrement(id);
+                redisTemplate.opsForValue().increment(id);
             }
             return new ReturnResult("200",true,OrderId);
         }
